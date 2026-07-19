@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Never commit real wallet data or keys - scoped precisely to this repo's
+# own runtime datadirs (NOT a blanket *.dat/datadir pattern, which would
+# also match legitimate source files like bitcoin-source's own
+# src/node/data/ip_asn.dat)
+/wallet/datadir/
+/node-data/
+/wallet.dat
+
+# OS
+.DS_Store
+Thumbs.db
