@@ -22,7 +22,22 @@ passphrase. Nobody but you should ever see it.)
 
 STEP 2 - START MINING
 -----------------------
-Double-click:
+This step needs one thing that isn't bundled here on purpose: the
+actual GPU mining program, kawpowminer. Bundling someone else's binary
+means you'd have no way to check it's genuinely theirs - downloading it
+yourself from the source lets you verify that. Get it from:
+
+    https://github.com/RavenCommunity/kawpowminer/releases
+
+(the Windows CUDA build), check its published .sha256sum matches, then
+unzip it and drop the files - kawpowminer.exe and its .dll files -
+right into this same folder, next to start-mining.bat.
+
+If kawpowminer.exe is already in this folder, or in a
+kawpowminer-windows-x.x.x subfolder next to this file, skip the above -
+you're already set up.
+
+Then double-click:
 
     start-mining.bat
 
