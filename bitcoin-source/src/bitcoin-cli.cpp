@@ -437,7 +437,7 @@ private:
         case ChainType::SIGNET:
             return " signet";
         case ChainType::REGTEST:
-            return " regtest";
+            return " sharenet";
         case ChainType::MAIN:
             return "";
         }

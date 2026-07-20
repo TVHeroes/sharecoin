@@ -21,7 +21,7 @@ std::string ChainTypeToString(ChainType chain)
     case ChainType::SIGNET:
         return "signet";
     case ChainType::REGTEST:
-        return "regtest";
+        return "sharenet";
     }
     assert(false);
 }
@@ -36,7 +36,9 @@ std::optional<ChainType> ChainTypeFromString(std::string_view chain)
         return ChainType::TESTNET4;
     } else if (chain == "signet") {
         return ChainType::SIGNET;
-    } else if (chain == "regtest") {
+    } else if (chain == "sharenet" || chain == "regtest") {
+        // "regtest" kept as an accepted alias so any existing -chain=regtest
+        // config/scripts still resolve correctly after the sharenet rename.
         return ChainType::REGTEST;
     } else {
         return std::nullopt;

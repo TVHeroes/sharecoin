@@ -597,7 +597,7 @@ public:
         pchMessageStart[0] = 0x53; // 'S'
         pchMessageStart[1] = 0x48; // 'H'
         pchMessageStart[2] = 0x43; // 'C'
-        pchMessageStart[3] = 0x52; // 'R' - spells SHCR (Sharecoin regtest)
+        pchMessageStart[3] = 0x4E; // 'N' - spells SHCN (Sharecoin shareNet)
         nDefaultPort = 18544;
         nPruneAfterHeight = opts.fastprune ? 100 : 1000;
         m_assumed_blockchain_size = 0;
@@ -605,7 +605,7 @@ public:
 
         ApplyDeploymentOptions(opts.dep_opts);
 
-        genesis = CreateGenesisBlock(1296688602, 21761, 0x1e53e2d6, 1, 50 * COIN, uint256{"920c0c85af3e2d0ad28913155201e9d0499c3b7e15495cf97e93fdbfe622a50c"});
+        genesis = CreateGenesisBlock(1296688602, 1537228672809257225, 0x1e0a7c5a, 1, 50 * COIN, uint256{"65befbc878b868a723163cd39c371b96405d64220042b1ff07d8c67384109bc1"});
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(genesis.hashMerkleRoot == uint256{"4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"});
 

@@ -101,8 +101,8 @@ static int AppInitUtil(ArgsManager& args, int argc, char* argv[])
 // a production miner.
 static int Grind(const std::vector<std::string>& args, std::string& strPrint)
 {
-    if (args.size() != 1) {
-        strPrint = "Must specify block header to grind";
+    if (args.size() != 1 && args.size() != 2) {
+        strPrint = "Must specify block header to grind, optionally followed by a decimal start_nonce (for splitting the search across parallel processes over disjoint nonce ranges)";
         return EXIT_FAILURE;
     }
 
@@ -112,8 +112,18 @@ static int Grind(const std::vector<std::string>& args, std::string& strPrint)
         return EXIT_FAILURE;
     }
 
+    uint64_t start_nonce{0};
+    if (args.size() == 2) {
+        const auto parsed{ToIntegral<uint64_t>(args[1])};
+        if (!parsed) {
+            strPrint = "Could not parse start_nonce";
+            return EXIT_FAILURE;
+        }
+        start_nonce = *parsed;
+    }
+
     uint64_t max_iterations{std::numeric_limits<uint32_t>::max()};
-    if (!MineBlock(header, /*start_nonce=*/0, max_iterations)) {
+    if (!MineBlock(header, start_nonce, max_iterations)) {
         strPrint = "Could not satisfy difficulty target";
         return EXIT_FAILURE;
     }
