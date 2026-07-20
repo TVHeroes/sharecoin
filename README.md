@@ -6,10 +6,11 @@ GPU-favorable, ASIC-resistant algorithm Ravencoin uses. Everything else
 (transactions, scripts, wallets, P2P networking, RPC) is untouched
 upstream Bitcoin Core.
 
-These instructions assume Linux, the standard way to build and run any
-Bitcoin Core fork. On Windows, prebuilt binaries and `.bat` launcher
-scripts are provided so building from source isn't required - see
-[docs/WINDOWS.md](docs/WINDOWS.md) instead of the sections below.
+The build instructions below assume Linux, the standard way to build any
+Bitcoin Core fork. You don't have to build anything to use Sharecoin,
+though - see the prebuilt-package callout right below, or
+[docs/WINDOWS.md](docs/WINDOWS.md) for the Windows-specific path if you'd
+rather use prebuilt binaries there instead.
 
 **Just want to get mining, no cloning or building?** Grab a prebuilt
 package from [Releases](https://github.com/TVHeroes/sharecoin/releases/latest) -
@@ -58,6 +59,8 @@ mine trust.
   `docs/DETAILS.md` if you want to audit or re-derive the diff.
 - `wallet/` - prebuilt Windows binaries and `.bat` launcher scripts, see
   `docs/WINDOWS.md` - not needed on Linux.
+- `START-HERE.txt` - plain-language quick-start for anyone using the
+  prebuilt Windows package from Releases, not building from source.
 
 Real GPU mining software (kawpowminer etc.) isn't bundled here - see
 "Mining" below.

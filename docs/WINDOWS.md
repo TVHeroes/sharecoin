@@ -1,8 +1,8 @@
 # Sharecoin on Windows
 
-The README assumes Linux. This is the Windows-specific path: prebuilt
-binaries and `.bat` launcher scripts, so nothing needs to be built from
-source.
+The main README's build instructions assume Linux. This is the
+Windows-specific path: prebuilt binaries and `.bat` launcher scripts, so
+nothing needs to be built from source.
 
 ## What's in `wallet/`
 
@@ -30,12 +30,13 @@ the Qt wallet.
 ## Mining
 
 `start-mining.bat` is a launcher; it expects a separate program called
-**kawpowminer** to already be downloaded and sitting next to it - this
-repo does not include it. Get the Windows CUDA build from
+**kawpowminer** to already be downloaded - this repo does not include it.
+Get the Windows CUDA build from
 [RavenCommunity/kawpowminer's GitHub Releases](https://github.com/RavenCommunity/kawpowminer/releases)
 (`kawpowminer-windows-cuda11-1.2.4.zip` as of writing), verify its
-published `.sha256sum`, extract it, then place `start-mining.bat` in the
-same folder as the extracted `kawpowminer.exe`.
+published `.sha256sum`, then extract it either right next to
+`start-mining.bat`, or into its own `kawpowminer-windows-x.x.x\`
+subfolder alongside it - the script checks both locations automatically.
 
 Run `start-mining.bat`, enter your address and a worker name, done - it
 connects to a live, already-running Sharecoin network by default. Real

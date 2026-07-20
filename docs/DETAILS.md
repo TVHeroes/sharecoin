@@ -190,7 +190,7 @@ sharecoin-cli getrandombeacon 1000 250    # combines blocks [1000, 1249]
 
 ## Known limitations
 
-- Only regtest's genesis is actually mined at a real difficulty target;
+- Only sharenet's genesis is actually mined at a real difficulty target;
   main/testnet/testnet4/signet ship with placeholder genesis fields and
   would need the same treatment before use.
 - Legacy base58 address version bytes (P2PKH/P2SH/WIF) are still inherited
