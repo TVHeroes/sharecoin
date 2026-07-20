@@ -11,6 +11,12 @@ Bitcoin Core fork. On Windows, prebuilt binaries and `.bat` launcher
 scripts are provided so building from source isn't required - see
 [docs/WINDOWS.md](docs/WINDOWS.md) instead of the sections below.
 
+**Just want to get mining on Windows, no cloning or building?** Grab the
+latest portable wallet from
+[Releases](https://github.com/TVHeroes/sharecoin/releases/latest),
+unzip it, and follow [START-HERE.txt](START-HERE.txt) - two steps, wallet
+then miner.
+
 ## The pitch
 
 Here's what almost every Bitcoin fork quietly throws away: all that GPU
