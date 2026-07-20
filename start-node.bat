@@ -24,7 +24,7 @@ if %ERRORLEVEL% EQU 0 (
 )
 
 echo Starting sharecoind...
-start "Sharecoin node" "%~dp0wallet\sharecoind.exe" -regtest -datadir="%DATADIR%" -printtoconsole=0 -port=%P2PPORT% -rpcport=%RPCPORT% -rpcuser=%RPCUSER% -rpcpassword=%RPCPASSWORD% -rpcbind=127.0.0.1 -rpcallowip=127.0.0.1 -wallet=w
+start "Sharecoin node" "%~dp0wallet\sharecoind.exe" -regtest -datadir="%DATADIR%" -printtoconsole=0 -port=%P2PPORT% -rpcport=%RPCPORT% -rpcuser=%RPCUSER% -rpcpassword=%RPCPASSWORD% -rpcbind=127.0.0.1 -rpcallowip=127.0.0.1 -wallet=w -fallbackfee=0.0001
 
 echo Waiting for RPC...
 ping -n 6 127.0.0.1 >nul
