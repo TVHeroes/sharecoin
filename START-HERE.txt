@@ -1,0 +1,62 @@
+SHARECOIN (SHC) - QUICK START
+==============================
+
+Two steps: get a wallet, then start mining. Both just work out of the
+box - no setup, no config files, nothing to install beyond what's here.
+
+
+STEP 1 - GET A WALLET
+----------------------
+Go into the "wallet" folder and double-click:
+
+    start-wallet.bat
+
+The first time it runs, it'll ask you to create a wallet - just accept
+the defaults. Once it opens, click the "Receive" tab and hit "Create
+new receiving address". That address is yours - it's how you get paid
+for mining.
+
+(Optional but recommended: Settings -> Encrypt Wallet, and set a
+passphrase. Nobody but you should ever see it.)
+
+
+STEP 2 - START MINING
+-----------------------
+Double-click:
+
+    start-mining.bat
+
+It'll ask for two things:
+  - Your wallet address (the one you just created in Step 1)
+  - A worker name (anything - "rig1" is fine)
+
+That's it. It connects to the live Sharecoin network automatically and
+starts mining with your GPU. Leave the window open while it runs.
+
+Requirements: an NVIDIA or AMD GPU. A CPU alone won't really work for
+this - it's designed to need a real graphics card, on purpose (that's
+what keeps mining fair and spread out instead of a few large operations
+dominating it).
+
+
+CHECKING YOUR BALANCE
+-----------------------
+Open the wallet again (start-wallet.bat) any time to see your balance
+and transaction history. Mined coins take 100 confirmations to mature
+(a normal Bitcoin-style rule, not a bug) - you'll see them as
+"immature" for a little while after each block before they're spendable.
+
+
+IF SOMETHING GOES WRONG
+--------------------------
+- Miner won't connect: the live network runs on one person's own
+  machine, not a company server - it's usually up, but if it's down,
+  just try again later.
+- Wallet stuck loading: this only happens if it's been offline a long
+  while and has catching up to do. Give it a few minutes.
+- Anything else, or if you want to understand how this actually works
+  under the hood: see README.md and the docs/ folder, or the source at
+  github.com/TVHeroes/sharecoin.
+
+
+That's the whole thing. Have fun.
