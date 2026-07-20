@@ -569,7 +569,14 @@ public:
         m_chain_type = ChainType::REGTEST;
         consensus.signet_blocks = false;
         consensus.signet_challenge.clear();
-        consensus.nSubsidyHalvingInterval = 150;
+        // Bitcoin Core's regtest default (150 blocks) halves in minutes at
+        // this chain's real block pace - fine for throwaway test chains,
+        // wrong for a persistent one with real miners. 5,000,000 blocks is
+        // roughly 150 days (~5 months) per halving at the current ~2.6s/
+        // block target - backward-compatible with all already-mined blocks
+        // (a larger interval only ever raises the allowed subsidy at a given
+        // height, never lowers it below what was already paid).
+        consensus.nSubsidyHalvingInterval = 5000000;
         consensus.BIP34Height = 1; // Always active unless overridden
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1;  // Always active unless overridden
