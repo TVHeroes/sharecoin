@@ -97,8 +97,16 @@ that one, see "Running your own network" below.
 
 ### Running your own network
 
-Run the `sharecoind` you built (or, on Windows, `start-node.bat` with the
-prebuilt binaries - see `docs/WINDOWS.md`). You'll also need a Stratum
+Run the `sharecoind` you built (always with `-regtest` - see the README's
+warning on this; without it you get a real Bitcoin mainnet node instead,
+which crashes outright in this fork - or, on Windows, `start-node.bat`
+with the prebuilt binaries - see `docs/WINDOWS.md`):
+
+```
+./sharecoind -regtest -daemon
+```
+
+You'll also need a Stratum
 proxy in front of it - real GPU miners speak Stratum, not Bitcoin's own
 `getblocktemplate`/`submitblock` RPC directly. This repo does **not**
 bundle one - the one used during this fork's own development is based on

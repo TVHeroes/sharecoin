@@ -74,6 +74,17 @@ The resulting binaries are named `sharecoind`, `sharecoin-cli`,
 any Bitcoin Core fork, just renamed and running ProgPoW/KawPow instead of
 SHA-256d.
 
+**Always run these binaries with `-regtest`.** Without it, `sharecoind`
+defaults to real Bitcoin mainnet - wrong network, wrong genesis, and in
+this fork specifically it won't even start: mainnet's genesis block was
+mined for real Bitcoin's original SHA-256d algorithm, and this fork
+checks proof-of-work with ProgPoW everywhere, including mainnet, so that
+genesis can never pass validation here. You'll see a warning about
+~800+ GB of disk space needed, immediately followed by a fatal
+`Failed to read block` crash - that combination is the tell. Every
+command in this README and in `docs/` already includes `-regtest`; if
+you type your own, don't drop it.
+
 ## Getting a wallet address
 
 Run `generate_wallet.py` (`pip install base58 pycryptodome ecdsa`) to
