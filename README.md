@@ -11,11 +11,12 @@ Bitcoin Core fork. On Windows, prebuilt binaries and `.bat` launcher
 scripts are provided so building from source isn't required - see
 [docs/WINDOWS.md](docs/WINDOWS.md) instead of the sections below.
 
-**Just want to get mining on Windows, no cloning or building?** Grab the
-latest portable wallet from
-[Releases](https://github.com/TVHeroes/sharecoin/releases/latest),
-unzip it, and follow [START-HERE.txt](START-HERE.txt) - two steps, wallet
-then miner.
+**Just want to get mining, no cloning or building?** Grab a prebuilt
+package from [Releases](https://github.com/TVHeroes/sharecoin/releases/latest) -
+Windows gets a portable wallet + launchers (unzip, then follow
+[START-HERE.txt](START-HERE.txt)); Linux gets stripped `sharecoind`/
+`sharecoin-cli`/`sharecoin-util` binaries (CLI only, no GUI - see the
+README.txt inside the tarball).
 
 ## The pitch
 
