@@ -587,9 +587,16 @@ public:
         consensus.powLimit = uint256{"7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"};
         consensus.nPowTargetTimespan = 24 * 60 * 60; // one day
         consensus.nPowTargetSpacing = 10 * 60;
-        consensus.fPowAllowMinDifficultyBlocks = true;
+        // Real Bitcoin-style retargeting, on (144-block window, same math
+        // mainnet/testnet already use, untouched by this fork) - a fixed
+        // difficulty doesn't scale with adoption: more miners joining just
+        // makes blocks faster forever, with nothing to correct it. Min-
+        // difficulty-after-a-gap is off too - fine for a throwaway test
+        // chain, not for one meant to hold real value (anyone could mine a
+        // trivially-easy block after any lull otherwise).
+        consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.enforce_BIP94 = opts.enforce_bip94;
-        consensus.fPowNoRetargeting = true;
+        consensus.fPowNoRetargeting = false;
 
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 0;
