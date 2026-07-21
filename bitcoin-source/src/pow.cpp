@@ -18,13 +18,14 @@
 #include <cstring>
 #include <span>
 
-// GPU-mined-crypto note (see ../NOTES.md): the ONLY change in this file is
-// how CheckProofOfWorkImpl computes the hash it checks against the target -
-// GetNextWorkRequired/CalculateNextWorkRequired/PermittedDifficultyTransition
-// below are completely unmodified from upstream Bitcoin Core, since the
-// retargeting math only ever manipulates nBits/arith_uint256 targets and
-// doesn't care what hash function produced the block. This is deliberate:
-// reuse everything that isn't the actual mining algorithm.
+// GPU-mined-crypto note (see ../NOTES.md): CheckProofOfWorkImpl's hash
+// computation (below) is still unmodified upstream logic aside from which
+// hash function it checks against the target. GetNextWorkRequired,
+// however, now dispatches to LwmaCalculateNextWorkRequired instead of
+// upstream's fixed-window CalculateNextWorkRequired (kept below, unused by
+// GetNextWorkRequired but left in place since pow_tests.cpp/fuzz/pow.cpp
+// still reference it directly) - see consensus/params.h's field comments
+// for why.
 namespace {
 
 ethash::hash256 ToEthashHash256(const uint256& h)
@@ -67,37 +68,69 @@ ethash::hash256 TargetToBoundary(const arith_uint256& target)
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     assert(pindexLast != nullptr);
-    unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
 
-    // Only change once per difficulty adjustment interval
-    if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
-    {
-        if (params.fPowAllowMinDifficultyBlocks)
-        {
-            // Special difficulty rule for testnet:
-            // If the new block's timestamp is more than 2* 10 minutes
-            // then it MUST be a min-difficulty block.
-            if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
-                return nProofOfWorkLimit;
-            else
-            {
-                // Return the last non-special-min-difficulty-rules-block
-                const CBlockIndex* pindex = pindexLast;
-                while (pindex->pprev && pindex->nHeight % params.DifficultyAdjustmentInterval() != 0 && pindex->nBits == nProofOfWorkLimit)
-                    pindex = pindex->pprev;
-                return pindex->nBits;
-            }
-        }
+    if (params.fPowNoRetargeting)
         return pindexLast->nBits;
+
+    // Bootstrap period: not enough history yet for a meaningful weighted
+    // average, so hold at genesis's own difficulty until there is. Once
+    // past it, LWMA takes over and stays responsive to real hashrate for
+    // every block after, not just at fixed-window boundaries.
+    if (pindexLast->nHeight + 1 <= params.nLwmaAveragingWindow) {
+        return pindexLast->GetAncestor(0)->nBits;
     }
 
-    // Go back by what we want to be 14 days worth of blocks
-    int nHeightFirst = pindexLast->nHeight - (params.DifficultyAdjustmentInterval()-1);
-    assert(nHeightFirst >= 0);
-    const CBlockIndex* pindexFirst = pindexLast->GetAncestor(nHeightFirst);
-    assert(pindexFirst);
+    return LwmaCalculateNextWorkRequired(pindexLast, params);
+}
 
-    return CalculateNextWorkRequired(pindexLast, pindexFirst->GetBlockTime(), params);
+unsigned int LwmaCalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params& params)
+{
+    const int64_t T = params.nPowTargetSpacing;
+    const int64_t N = params.nLwmaAveragingWindow;
+    const int64_t k = params.nLwmaAdjustedWeight;
+    const int64_t dnorm = params.nLwmaMinDenominator;
+    const int height = pindexLast->nHeight + 1;
+    assert(height > N);
+
+    arith_uint256 sum_target;
+    int64_t t = 0, j = 0;
+
+    // Loop through the N most recent blocks, weighting each block's
+    // solvetime by its position in the window (j=1 for the oldest block
+    // counted, j=N for the most recent) - see consensus/params.h for why.
+    for (int i = height - N; i < height; i++) {
+        const CBlockIndex* block = pindexLast->GetAncestor(i);
+        const CBlockIndex* block_prev = block->GetAncestor(i - 1);
+        int64_t solvetime = block->GetBlockTime() - block_prev->GetBlockTime();
+
+        if (params.fLwmaSolvetimeLimitation && solvetime > 6 * T) {
+            solvetime = 6 * T;
+        }
+
+        j++;
+        t += solvetime * j;
+
+        // Target sum divided by (k * N^2) here rather than after the loop,
+        // to keep intermediate values well within arith_uint256's range.
+        arith_uint256 target;
+        target.SetCompact(block->nBits);
+        sum_target += target / (k * N * N);
+    }
+
+    // Floor t so a run of implausibly-fast solvetimes can't push the next
+    // target toward zero.
+    int64_t t_min = N * k / dnorm;
+    if (t < t_min) {
+        t = t_min;
+    }
+
+    const arith_uint256 pow_limit = UintToArith256(params.powLimit);
+    arith_uint256 next_target = t * sum_target;
+    if (next_target > pow_limit) {
+        next_target = pow_limit;
+    }
+
+    return next_target.GetCompact();
 }
 
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params)
@@ -139,52 +172,13 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
 // Check that on difficulty adjustments, the new difficulty does not increase
 // or decrease beyond the permitted limits.
-bool PermittedDifficultyTransition(const Consensus::Params& params, int64_t height, uint32_t old_nbits, uint32_t new_nbits)
+bool PermittedDifficultyTransition(const Consensus::Params&, int64_t, uint32_t, uint32_t)
 {
-    if (params.fPowAllowMinDifficultyBlocks) return true;
-
-    if (height % params.DifficultyAdjustmentInterval() == 0) {
-        int64_t smallest_timespan = params.nPowTargetTimespan/4;
-        int64_t largest_timespan = params.nPowTargetTimespan*4;
-
-        const arith_uint256 pow_limit = UintToArith256(params.powLimit);
-        arith_uint256 observed_new_target;
-        observed_new_target.SetCompact(new_nbits);
-
-        // Calculate the largest difficulty value possible:
-        arith_uint256 largest_difficulty_target;
-        largest_difficulty_target.SetCompact(old_nbits);
-        largest_difficulty_target *= largest_timespan;
-        largest_difficulty_target /= params.nPowTargetTimespan;
-
-        if (largest_difficulty_target > pow_limit) {
-            largest_difficulty_target = pow_limit;
-        }
-
-        // Round and then compare this new calculated value to what is
-        // observed.
-        arith_uint256 maximum_new_target;
-        maximum_new_target.SetCompact(largest_difficulty_target.GetCompact());
-        if (maximum_new_target < observed_new_target) return false;
-
-        // Calculate the smallest difficulty value possible:
-        arith_uint256 smallest_difficulty_target;
-        smallest_difficulty_target.SetCompact(old_nbits);
-        smallest_difficulty_target *= smallest_timespan;
-        smallest_difficulty_target /= params.nPowTargetTimespan;
-
-        if (smallest_difficulty_target > pow_limit) {
-            smallest_difficulty_target = pow_limit;
-        }
-
-        // Round and then compare this new calculated value to what is
-        // observed.
-        arith_uint256 minimum_new_target;
-        minimum_new_target.SetCompact(smallest_difficulty_target.GetCompact());
-        if (minimum_new_target > observed_new_target) return false;
-    } else if (old_nbits != new_nbits) {
-        return false;
-    }
+    // See this function's declaration comment in pow.h: LWMA changes bits
+    // every block, which upstream's fixed-window bounds check (built for
+    // Bitcoin's own retargeting) can't correctly express. The real
+    // consensus rule lives in validation.cpp via GetNextWorkRequired, not
+    // here - this is only a headers-presync fast-path heuristic.
     return true;
 }
 

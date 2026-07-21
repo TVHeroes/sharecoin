@@ -30,6 +30,13 @@ std::optional<arith_uint256> DeriveTarget(unsigned int nBits, uint256 pow_limit)
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&);
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params&);
 
+/** LWMA (Linearly Weighted Moving Average) retargeting - see the field
+ * comments in consensus/params.h for why this fork uses it instead of
+ * Bitcoin's fixed-window retargeting. Requires pindexLast->nHeight + 1 to
+ * be greater than params.nLwmaAveragingWindow; callers (GetNextWorkRequired)
+ * handle the earlier bootstrap period separately. */
+unsigned int LwmaCalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params& params);
+
 /** Check whether a block satisfies the proof-of-work requirement specified by nBits.
  * GPU-mined-crypto note: takes the full CBlockHeader, not just a precomputed
  * hash, because the actual proof-of-work hash (ProgPoW, see pow.cpp) needs
@@ -100,12 +107,17 @@ EthashNativeWork GetEthashNativeWork(const CBlockHeader& block, unsigned int nBi
  * given height is not possible, given the proof-of-work on the prior block as
  * specified by old_nbits.
  *
- * This function only checks that the new value is within a factor of 4 of the
- * old value for blocks at the difficulty adjustment interval, and otherwise
- * requires the values to be the same.
- *
- * Always returns true on networks where min difficulty blocks are allowed,
- * such as regtest/testnet.
+ * Upstream, this only checks that the new value is within a factor of 4 of
+ * the old value for blocks at the difficulty adjustment interval, and
+ * otherwise requires the values to be the same - a bounds check that
+ * assumes Bitcoin's fixed-window retargeting (bits only ever change once
+ * every DifficultyAdjustmentInterval() blocks). This fork's LWMA
+ * retargeting changes bits on every block, which that assumption can't
+ * express, so this function always returns true here - it's only ever
+ * used as a fast-path sanity heuristic during headers presync
+ * (headerssync.cpp), not the actual consensus rule (validation.cpp's
+ * ContextualCheckBlockHeader independently recomputes and requires an
+ * exact match via GetNextWorkRequired regardless of this function).
  */
 bool PermittedDifficultyTransition(const Consensus::Params& params, int64_t height, uint32_t old_nbits, uint32_t new_nbits);
 

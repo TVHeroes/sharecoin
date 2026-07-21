@@ -127,6 +127,37 @@ struct Params {
         return std::chrono::seconds{nPowTargetSpacing};
     }
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
+    /**
+      * LWMA (Linearly Weighted Moving Average) retargeting - adjusts every
+      * block using a weighted average over the last nLwmaAveragingWindow
+      * blocks (recent blocks weighted more heavily), instead of Bitcoin's
+      * fixed-window average recalculated only once every
+      * DifficultyAdjustmentInterval() blocks. Chosen deliberately: this
+      * fork's real GPU hashrate can appear and disappear far faster than
+      * Bitcoin's own miner base does, and a long fixed window means a
+      * sudden hashrate spike leaves difficulty badly overshot for the
+      * *entire remainder* of that window even after the extra hashrate is
+      * long gone - observed for real on this fork's own network (a single
+      * rig mining briefly pushed difficulty ~6.6x higher, then leaving
+      * meant everyone else was stuck with a ~54-minutes-per-block reality
+      * for the ~136 remaining blocks until the next fixed-window
+      * recalculation). LWMA reacts within roughly a window's worth of
+      * blocks in either direction instead. Whether LWMA is actually used
+      * for a given chain is decided in pow.cpp's GetNextWorkRequired, not
+      * here - these fields are only meaningful when it is.
+      *
+      * Constants below (window=45, weight=13772, minDenominator=10,
+      * solvetime clamped to 6x target spacing) are not a fresh derivation -
+      * they're Bitcoin Gold's own real, live-mainnet-proven parameters for
+      * an identical 600-second target spacing (verified: weight = (N+1)/2 *
+      * 0.998 * spacing = 23 * 0.998 * 600 = 13772.4, matching exactly).
+      * Reusing a battle-tested parameter set for the same spacing is safer
+      * than re-deriving one from scratch for a consensus-critical value.
+      */
+    int64_t nLwmaAveragingWindow{45};
+    int64_t nLwmaAdjustedWeight{13772};
+    int64_t nLwmaMinDenominator{10};
+    bool fLwmaSolvetimeLimitation{true};
     /** The best chain should have at least this much work */
     uint256 nMinimumChainWork;
     /** By default assume that the signatures in ancestors of this block are valid */
