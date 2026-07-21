@@ -64,9 +64,11 @@ and transaction history. Mined coins take 100 confirmations to mature
 
 IF SOMETHING GOES WRONG
 --------------------------
-- Miner won't connect: the live network runs on one person's own
-  machine, not a company server - it's usually up, but if it's down,
-  just try again later.
+- Miner won't connect: this isn't run by a company with guaranteed
+  uptime, though there's automatic failover behind the scenes - if it
+  briefly drops, just leave the miner running, it reconnects on its own
+  within under a minute. If it's still not connecting after that, try
+  again later.
 - Wallet stuck loading: this only happens if it's been offline a long
   while and has catching up to do. Give it a few minutes.
 - Anything else, or if you want to understand how this actually works
