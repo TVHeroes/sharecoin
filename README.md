@@ -1,3 +1,5 @@
+<img align="left" width="72" height="72" src="docs/img/logo.svg" alt="Sharecoin logo">
+
 # Sharecoin (SHC)
 
 A real fork of Bitcoin Core's C++ source, swapping the mining
