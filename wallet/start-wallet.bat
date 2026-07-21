@@ -1,6 +1,5 @@
 @echo off
-REM Launches the Sharecoin wallet GUI, connected to the live public node
-REM via a router port-forward and dynamic DNS (sharecoin.duckdns.org) -
+REM Launches the Sharecoin wallet GUI, connected to the live public node -
 REM see this repo's README for details.
 REM -prune=550 keeps this wallet's disk footprint small by discarding old
 REM block data once it's been validated - fine for a normal wallet (balance/
