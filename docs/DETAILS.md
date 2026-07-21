@@ -89,23 +89,26 @@ Real GPU miner software other than kawpowminer (T-Rex, GMiner, NBMiner -
 anything that speaks Stratum for KawPow) can point at the same address
 directly with its own `-o`/`-P` flag.
 
-**A caveat worth being honest about:** `sharecoin.duckdns.org` is
-one person's own machine on residential broadband, reachable via a
-router port-forward and dynamic DNS - not a permanent, dedicated
-service. It may not always be running, and its address could
-occasionally change if dynamic DNS lags a real IP change. If it's down,
-or if you'd rather run your own independent network instead of joining
-that one, see "Running your own network" below.
+**A caveat worth being honest about:** this default network is run
+informally, not as a permanent, guaranteed service, and its address
+could occasionally change. If it's unreachable, or if you'd rather run
+your own independent network instead of joining this one, see "Running
+your own network" below.
 
-**Backup node:** a second, independent machine (a Raspberry Pi on a
-different power circuit, with its own node and Stratum proxy) mirrors the
-main one as a fallback. Same hostname, ports `8444` (P2P) and `10001`
-(Stratum) instead of `8443`/`10000`. It syncs continuously from the main
-node, so it stays caught up even when idle, and its own node/proxy
-processes auto-restart on crash and boot. It's still the same two-machine
-setup on one home connection, though, not a geographically or
-network-independent one - if the whole connection or router goes down,
-both go down together.
+There's automatic failover behind this address - if the machine currently
+serving it goes down, another one takes over the same address without any
+action needed on a miner's end. An in-progress connection still drops the
+moment its current backend actually goes down (unavoidable - that TCP
+session belonged to a specific process on a specific machine), but
+well-behaved Stratum clients (kawpowminer included) already retry the
+same pool address on disconnect, so the next automatic reconnection
+attempt - typically within well under a minute - just succeeds on its
+own.
+
+Same caveat as above, just for both machines at once: this is still one
+home internet connection and one router, not a geographically independent
+setup - if the connection or router itself goes down, both machines go
+down together regardless of this mechanism.
 
 ### Running your own network
 

@@ -44,13 +44,10 @@ GPU miner software other than kawpowminer (T-Rex, GMiner, NBMiner -
 anything that speaks Stratum for KawPow) can point at the same address
 directly with its own `-o`/`-P` flag instead of using the `.bat` file.
 
-**A caveat worth being honest about:** the default network
-(`sharecoin.duckdns.org`) is one person's own machine on residential
-broadband, reachable via a router port-forward and dynamic DNS - not a
-permanent, dedicated service. It may not always be running, and its
-address could occasionally change if dynamic DNS lags a real IP change.
-If it's down, or you'd rather run your own independent network, see
-"Running your own network" below.
+**A caveat worth being honest about:** the default network is run
+informally, not as a permanent, guaranteed service, and its address could
+occasionally change. If it's unreachable, or you'd rather run your own
+independent network, see "Running your own network" below.
 
 ## Running your own network
 
