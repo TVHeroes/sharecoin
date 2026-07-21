@@ -121,7 +121,7 @@ Get it from [RavenCommunity/kawpowminer's GitHub Releases](https://github.com/Ra
 network:
 
 ```
-./kawpowminer -P stratum+tcp://YOUR_ADDRESS.worker1@stormforge.tail0b8084.ts.net:10000 --cu-grid-size 1 --cu-streams 1 --display-interval 2
+./kawpowminer -P stratum+tcp://YOUR_ADDRESS.worker1@sharecoin.duckdns.org:10000 --cu-grid-size 1 --cu-streams 1 --display-interval 2
 ```
 
 See `docs/DETAILS.md` for running your own node/network/Stratum proxy

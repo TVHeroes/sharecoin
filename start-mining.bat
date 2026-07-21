@@ -42,9 +42,9 @@ if "%WORKERNAME%"=="" set WORKERNAME=rig1
 
 :start
 echo.
-echo Connecting to stormforge.tail0b8084.ts.net:10000 as %WALLET%.%WORKERNAME%
+echo Connecting to sharecoin.duckdns.org:10000 as %WALLET%.%WORKERNAME%
 echo.
 
-"%KAWPOWMINER%" -P stratum+tcp://%WALLET%.%WORKERNAME%@stormforge.tail0b8084.ts.net:10000 --cu-grid-size 1 --cu-streams 1 --display-interval 2
+"%KAWPOWMINER%" -P stratum+tcp://%WALLET%.%WORKERNAME%@sharecoin.duckdns.org:10000 --cu-grid-size 1 --cu-streams 1 --display-interval 2
 
 pause

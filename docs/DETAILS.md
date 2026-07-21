@@ -80,7 +80,7 @@ written for this fork (see `bitcoin-source/src/crypto/ethash/CMakeLists.txt`))
 ## Mining in detail
 
 A live, already-running Sharecoin network is reachable by default at
-`stormforge.tail0b8084.ts.net:10000` - so mining against it needs no
+`sharecoin.duckdns.org:10000` - so mining against it needs no
 server setup of your own, just kawpowminer and a wallet address (see the
 README's "Mining" section for the download link and an example
 invocation).
@@ -89,9 +89,11 @@ Real GPU miner software other than kawpowminer (T-Rex, GMiner, NBMiner -
 anything that speaks Stratum for KawPow) can point at the same address
 directly with its own `-o`/`-P` flag.
 
-**A caveat worth being honest about:** `stormforge.tail0b8084.ts.net` is
-one person's own machine, reachable via Tailscale Funnel - not a
-permanent, dedicated service. It may not always be running. If it's down,
+**A caveat worth being honest about:** `sharecoin.duckdns.org` is
+one person's own machine on residential broadband, reachable via a
+router port-forward and dynamic DNS - not a permanent, dedicated
+service. It may not always be running, and its address could
+occasionally change if dynamic DNS lags a real IP change. If it's down,
 or if you'd rather run your own independent network instead of joining
 that one, see "Running your own network" below.
 
