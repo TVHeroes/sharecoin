@@ -97,6 +97,16 @@ occasionally change if dynamic DNS lags a real IP change. If it's down,
 or if you'd rather run your own independent network instead of joining
 that one, see "Running your own network" below.
 
+**Backup node:** a second, independent machine (a Raspberry Pi on a
+different power circuit, with its own node and Stratum proxy) mirrors the
+main one as a fallback. Same hostname, ports `8444` (P2P) and `10001`
+(Stratum) instead of `8443`/`10000`. It syncs continuously from the main
+node, so it stays caught up even when idle, and its own node/proxy
+processes auto-restart on crash and boot. It's still the same two-machine
+setup on one home connection, though, not a geographically or
+network-independent one - if the whole connection or router goes down,
+both go down together.
+
 ### Running your own network
 
 Run the `sharecoind` you built (always with `-regtest` - see the README's

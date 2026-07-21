@@ -124,6 +124,10 @@ network:
 ./kawpowminer -P stratum+tcp://YOUR_ADDRESS.worker1@sharecoin.duckdns.org:10000 --cu-grid-size 1 --cu-streams 1 --display-interval 2
 ```
 
+If that's unreachable, there's a second, independent machine mirroring the
+network as a fallback - swap the port for `10001` (same hostname) to mine
+against it instead.
+
 See `docs/DETAILS.md` for running your own node/network/Stratum proxy
 instead of joining that one, and GPU batch-size quirks at low difficulty.
 
