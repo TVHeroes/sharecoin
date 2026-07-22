@@ -30,7 +30,7 @@ if not "%WALLET_ADDRESS%"=="" if not "%WORKER_NAME%"=="" (
     goto :start
 )
 
-set /p WALLET="Enter your Sharecoin wallet address (starts with m or n): "
+set /p WALLET="Enter your Sharecoin wallet address (starts with shcrt1): "
 if "%WALLET%"=="" (
     echo No address entered - exiting.
     pause
