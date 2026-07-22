@@ -63,6 +63,8 @@ mine trust.
   `docs/WINDOWS.md` - not needed on Linux.
 - `START-HERE.txt` - plain-language quick-start for anyone using the
   prebuilt Windows package from Releases, not building from source.
+- `WHITEPAPER.pdf` - formal writeup of the protocol, threat model, and
+  the randomness beacon's design.
 
 Real GPU mining software (kawpowminer etc.) isn't bundled here - see
 "Mining" below.
@@ -139,7 +141,8 @@ instead of joining that one, and GPU batch-size quirks at low difficulty.
 `getrandombeacon start_height (window_size)` is a public, verifiable
 randomness source derived from already-confirmed blocks, designed to
 resist the "last revealer" bias that a single block's own `mix_hash`
-would have. See `docs/DETAILS.md` for the full design rationale.
+would have. See `docs/DETAILS.md` for the full design rationale, or
+[WHITEPAPER.pdf](WHITEPAPER.pdf) for the formal writeup.
 
 ## License
 
