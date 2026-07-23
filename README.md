@@ -50,6 +50,11 @@ query this second.
 Bitcoin proved you could mine money. Sharecoin's here to prove you can
 mine trust.
 
+No premine, no founder allocation, no presale, no coins set aside for
+anyone before the genesis block. Every coin in circulation is mined the
+same way, by anyone with a GPU, starting from the same publicly verifiable
+genesis everyone else did.
+
 ## Contents
 
 - `bitcoin-source/` - the patched Bitcoin Core source tree, builds the
